@@ -47,7 +47,7 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
     public function testDispatch(): void
     {
         $this->mediator->addListener('onEvent', new SomeController, 'onEvent');
-        $this->handler->onEvent();
+        $this->mediator->dispatch('onEvent');
 
         $this->assertEquals(Container::$app->get('some'), 'value');
     }
