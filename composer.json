@@ -1,7 +1,6 @@
 {
     "name"              : "rudra/event-dispatcher",
     "description"       : "Rudra framework",
-    "version"           : "v2.0.0",
     "type"              : "library",
     "keywords"          : [
         "rudra",
