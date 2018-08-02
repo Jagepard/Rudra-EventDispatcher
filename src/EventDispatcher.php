@@ -41,13 +41,13 @@ class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
-     * @param string $event
+     * @param string $key
      * @return mixed|void
      */
-    public function dispatch(string $event)
+    public function dispatch(string $key)
     {
-        $event    = $this->events[$event];
-        $listener = $this->listeners[$event];
+        $event    = $this->events[$key];
+        $listener = $this->listeners[$key];
 
         $listener->$event();
     }

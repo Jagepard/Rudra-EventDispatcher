@@ -26,8 +26,8 @@ interface EventDispatcherInterface
     public function addListener(string $key, $listener, string $event);
 
     /**
-     * @param string $event
-     * @return mixed
+     * @param string $key
+     * @return mixed|void
      */
-    public function dispatch(string $event);
+    public function dispatch(string $key);
 }
