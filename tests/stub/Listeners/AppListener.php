@@ -2,8 +2,8 @@
 
 namespace Rudra\Tests\stub\Listeners;
 
-use Rudra\ExternalTraits\SetContainerTrait;
 use Rudra\Interfaces\ContainerInterface;
+use Rudra\ExternalTraits\SetContainerTrait;
 
 class AppListener
 {
