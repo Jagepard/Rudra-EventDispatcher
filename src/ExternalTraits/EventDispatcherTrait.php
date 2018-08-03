@@ -41,10 +41,11 @@ trait EventDispatcherTrait
 
     /**
      * @param string $name
+     * @return mixed
      */
     public function dispatch(string $name)
     {
-        $this->container()->get('event.dispatcher')->dispatch($name);
+        return $this->container()->get('event.dispatcher')->dispatch($name);
     }
 
     /**
