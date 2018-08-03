@@ -13,9 +13,11 @@ namespace Rudra\Tests;
 use Rudra\Container;
 use Rudra\EventDispatcher;
 use Rudra\Tests\stub\Events\AppEvents;
+use Rudra\Tests\stub\Events\SomeEvent;
 use Rudra\Tests\stub\Listeners\AppListener;
 use Rudra\Interfaces\EventDispatcherInterface;
 use PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
+use Rudra\Tests\stub\Subscribers\AppSubscriber;
 
 /**
  * Class EventDispatcherTest
@@ -42,6 +44,8 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
         $this->mediator->addListener(AppEvents::APP_CLOSURE, function() {
             $this->listener->container()->set('closure', 'closure', 'raw');;
         });
+
+        $this->mediator->addSubscribers(new AppSubscriber(), new SomeEvent($this->listener->container()));
     }
 
     public function testInstance(): void
@@ -63,5 +67,14 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->listener->container()->get('closure'), 'closure');
         $this->assertInstanceOf(\Closure::class, $closure);
+    }
+
+    public function testSubscribers(): void
+    {
+        $this->mediator->dispatch('sub.listener');
+        $this->mediator->dispatch('sub.closure');
+
+        $this->assertEquals($this->listener->container()->get('one'), 'one');
+        $this->assertEquals($this->listener->container()->get('two'), 'two');
     }
 }
