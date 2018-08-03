@@ -34,6 +34,9 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
      * @var AppListener
      */
     protected $listener;
+    /**
+     * @var ContainerInterface
+     */
     protected $container;
 
     protected function setUp(): void
