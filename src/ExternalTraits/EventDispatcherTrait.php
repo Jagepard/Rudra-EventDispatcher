@@ -26,7 +26,7 @@ trait EventDispatcherTrait
      */
     public function addListener(string $key, $listener, string $event): void
     {
-        $this->container()->get('event-dispatcher')->addListener($key, $listener, $event);
+        $this->container()->get('event.dispatcher')->addListener($key, $listener, $event);
     }
 
     /**
@@ -35,7 +35,7 @@ trait EventDispatcherTrait
      */
     public function dispatch(string $key)
     {
-        $this->container()->get('event-dispatcher')->dispatch($key);
+        $this->container()->get('event.dispatcher')->dispatch($key);
     }
 
     /**
