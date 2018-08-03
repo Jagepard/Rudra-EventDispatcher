@@ -12,7 +12,8 @@ namespace Rudra\Tests;
 
 use Rudra\Container;
 use Rudra\EventDispatcher;
-use Rudra\Tests\stub\SomeController;
+use Rudra\Tests\stub\Events\AppEvents;
+use Rudra\Tests\stub\Listeners\AppListener;
 use Rudra\Interfaces\EventDispatcherInterface;
 use PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
 
@@ -24,9 +25,9 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var SomeController
+     * @var AppListener
      */
-    protected $handler;
+    protected $listener;
     /**
      * @var EventDispatcher
      */
@@ -34,21 +35,33 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
 
     protected function setUp(): void
     {
-        $this->handler  = new SomeController();
+        $this->listener = new AppListener(Container::app());
         $this->mediator = new EventDispatcher();
+
+        $this->mediator->addListener(AppEvents::APP_LISTENER, [$this->listener, 'onEvent']);
+        $this->mediator->addListener(AppEvents::APP_CLOSURE, function() {
+            $this->listener->container()->set('closure', 'closure', 'raw');;
+        });
     }
 
     public function testInstance(): void
     {
         $this->assertInstanceOf(EventDispatcherInterface::class, $this->mediator);
-        $this->assertInstanceOf(SomeController::class, $this->handler);
+        $this->assertInstanceOf(AppListener::class, $this->listener);
     }
 
-    public function testDispatch(): void
+    public function testListener(): void
     {
-        $this->mediator->addListener('onEvent', new SomeController, 'onEvent');
-        $this->mediator->dispatch('onEvent');
+        $this->mediator->dispatch('app.listener');
+        $this->assertEquals($this->listener->container()->get('listener'), 'listener');
+    }
 
-        $this->assertEquals(Container::$app->get('some'), 'value');
+    public function testClosure(): void
+    {
+        $closure = $this->mediator->dispatch('app.closure');
+        $closure();
+
+        $this->assertEquals($this->listener->container()->get('closure'), 'closure');
+        $this->assertInstanceOf(\Closure::class, $closure);
     }
 }
