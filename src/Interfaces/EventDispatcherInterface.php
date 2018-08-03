@@ -18,16 +18,21 @@ interface EventDispatcherInterface
 {
 
     /**
-     * @param string $key
+     * @param string $name
      * @param        $listener
-     * @param string $event
      * @return mixed
      */
-    public function addListener(string $key, $listener, string $event);
+    public function addListener(string $name, $listener);
 
     /**
-     * @param string $key
-     * @return mixed|void
+     * @param EventSubscriberInterface $subscriber
+     * @param null                     $event
      */
-    public function dispatch(string $key);
+    public function addSubscribers(EventSubscriberInterface $subscriber, $event = null): void;
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function dispatch(string $name);
 }
