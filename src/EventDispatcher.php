@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Rudra;
 
 use Rudra\Interfaces\EventDispatcherInterface;
+use Rudra\Interfaces\EventSubscriberInterface;
 
 /**
  * Class EventDispatcher
@@ -22,32 +23,53 @@ class EventDispatcher implements EventDispatcherInterface
     /**
      * @var array
      */
-    protected $events = [];
+    protected $methods = [];
     /**
      * @var array
      */
     protected $listeners = [];
 
     /**
-     * @param string $key
+     * @param string $name
      * @param        $listener
-     * @param string $event
-     * @return mixed|void
+     * @return mixed
      */
-    public function addListener(string $key, $listener, string $event)
+    public function addListener(string $name, $listener)
     {
-        $this->events[$key]    = $event;
-        $this->listeners[$key] = $listener;
+        if ($listener instanceof \Closure) {
+            $this->listeners[$name] = $listener;
+            return;
+        }
+
+        $this->methods[$name]   = $listener[1];
+        $this->listeners[$name] = $listener[0];
     }
 
     /**
-     * @param string $key
-     * @return mixed|void
+     * @param EventSubscriberInterface $subscriber
+     * @param null                     $event
      */
-    public function dispatch(string $key)
+    public function addSubscribers(EventSubscriberInterface $subscriber, $event = null): void
     {
-        $event    = $this->events[$key];
-        $listener = $this->listeners[$key];
+        foreach ($subscriber->getSubscribedEvents() as $name => $method) {
+            isset($event)
+                ? $this->addListener($name, [$event, $method])
+                : $this->addListener($name, [$subscriber, $method]);
+        }
+    }
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function dispatch(string $name)
+    {
+        if ($this->listeners[$name] instanceof \Closure) {
+            return $this->listeners[$name];
+        }
+
+        $event    = $this->methods[$name];
+        $listener = $this->listeners[$name];
 
         $listener->$event();
     }

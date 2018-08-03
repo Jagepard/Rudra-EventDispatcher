@@ -12,8 +12,13 @@ namespace Rudra\Tests;
 
 use Rudra\Container;
 use Rudra\EventDispatcher;
-use Rudra\Tests\stub\SomeController;
+use Rudra\Interfaces\ContainerInterface;
+use Rudra\Tests\stub\Events\AppEvents;
+use Rudra\Tests\stub\Events\SomeEvent;
+use Rudra\Tests\stub\Listeners\AppListener;
 use Rudra\Interfaces\EventDispatcherInterface;
+use Rudra\ExternalTraits\EventDispatcherTrait;
+use Rudra\Tests\stub\Subscribers\AppSubscriber;
 use PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
 
 /**
@@ -23,32 +28,63 @@ use PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
 class EventDispatcherTest extends PHPUnit_Framework_TestCase
 {
 
+    use EventDispatcherTrait;
+
     /**
-     * @var SomeController
+     * @var AppListener
      */
-    protected $handler;
+    protected $listener;
     /**
-     * @var EventDispatcher
+     * @var ContainerInterface
      */
-    protected $mediator;
+    protected $container;
 
     protected function setUp(): void
     {
-        $this->handler  = new SomeController();
-        $this->mediator = new EventDispatcher();
+        $this->container = Container::app();
+        $this->listener = new AppListener($this->container);
+        $this->container()->set('event.dispatcher', EventDispatcher::class);
+
+        $this->addListener(AppEvents::APP_LISTENER, [$this->listener, 'onEvent']);
+        $this->addListener(AppEvents::APP_CLOSURE, function () {
+            $this->container()->set('closure', 'closure', 'raw');;
+        });
+
+        $this->addSubscribers(new AppSubscriber(), new SomeEvent($this->container()));
     }
 
     public function testInstance(): void
     {
-        $this->assertInstanceOf(EventDispatcherInterface::class, $this->mediator);
-        $this->assertInstanceOf(SomeController::class, $this->handler);
+        $this->assertInstanceOf(EventDispatcherInterface::class, $this->container()->get('event.dispatcher'));
+        $this->assertInstanceOf(AppListener::class, $this->listener);
     }
 
-    public function testDispatch(): void
+    public function testListener(): void
     {
-        $this->mediator->addListener('onEvent', new SomeController, 'onEvent');
-        $this->mediator->dispatch('onEvent');
+        $this->container()->get('event.dispatcher')->dispatch('app.listener');
+        $this->assertEquals($this->container()->get('listener'), 'listener');
+    }
 
-        $this->assertEquals(Container::$app->get('some'), 'value');
+    public function testClosure(): void
+    {
+        $closure = $this->dispatch('app.closure');
+        $closure();
+
+        $this->assertEquals($this->container()->get('closure'), 'closure');
+        $this->assertInstanceOf(\Closure::class, $closure);
+    }
+
+    public function testSubscribers(): void
+    {
+        $this->dispatch('sub.listener');
+        $this->dispatch('sub.closure');
+
+        $this->assertEquals($this->container()->get('one'), 'one');
+        $this->assertEquals($this->container()->get('two'), 'two');
+    }
+
+    public function container(): ContainerInterface
+    {
+        return $this->container;
     }
 }
