@@ -3,18 +3,19 @@
 namespace Rudra\Tests\stub\Events;
 
 use Rudra\Interfaces\EventInterface;
+use Rudra\ExternalTraits\SetContainerTrait;
 
 class SomeEvent implements EventInterface
 {
-    protected $name;
+    use SetContainerTrait;
 
-    public function __construct($name)
+    public function oneEvent()
     {
-        $this->name = $name;
+        $this->container()->set('one', 'one', 'raw');
     }
 
-    public function getName()
+    public function twoEvent()
     {
-        return $this->name;
+        $this->container()->set('two', 'two', 'raw');
     }
 }
