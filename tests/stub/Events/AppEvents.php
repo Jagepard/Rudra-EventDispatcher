@@ -10,4 +10,3 @@ class AppEvents
     const SUB_CLOSURE  = 'sub.closure';
     const SUB_LISTENER = 'sub.listener';
 }
-
