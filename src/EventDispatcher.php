@@ -52,8 +52,8 @@ class EventDispatcher implements EventDispatcherInterface
     public function addSubscribers(EventSubscriberInterface $subscriber, $event = null): void
     {
         foreach ($subscriber->getSubscribedEvents() as $name => $method) {
-            isset($listener)
-                ? $this->addListener($name, [$listener, $method])
+            isset($event)
+                ? $this->addListener($name, [$event, $method])
                 : $this->addListener($name, [$subscriber, $method]);
         }
     }
