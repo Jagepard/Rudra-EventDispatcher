@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Rudra\ExternalTraits;
 
 use Rudra\Interfaces\ContainerInterface;
+use Rudra\Interfaces\EventSubscriberInterface;
 
 /**
  * Trait EventDispatcherTrait
@@ -20,22 +21,30 @@ trait EventDispatcherTrait
 {
 
     /**
-     * @param string $key
+     * @param string $name
      * @param        $listener
-     * @param string $event
+     * @return mixed
      */
-    public function addListener(string $key, $listener, string $event): void
+    public function addListener(string $name, $listener)
     {
-        $this->container()->get('event.dispatcher')->addListener($key, $listener, $event);
+        $this->container()->get('event.dispatcher')->addListener($name, $listener);
     }
 
     /**
-     * @param string $key
-     * @return mixed|void
+     * @param EventSubscriberInterface $subscriber
+     * @param null                     $event
      */
-    public function dispatch(string $key)
+    public function addSubscribers(EventSubscriberInterface $subscriber, $event = null): void
     {
-        $this->container()->get('event.dispatcher')->dispatch($key);
+        $this->container()->get('event.dispatcher')->addSubscribers($subscriber, $event);
+    }
+
+    /**
+     * @param string $name
+     */
+    public function dispatch(string $name)
+    {
+        $this->container()->get('event.dispatcher')->dispatch($name);
     }
 
     /**
