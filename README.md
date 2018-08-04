@@ -18,7 +18,7 @@
 ```php
 use Rudra\Container;
 use Rudra\EventDispatcher;
-use Rudra\ContainerInterface;
+use Rudra\Interfaces\ContainerInterface;
 ```
 ```php
 $rudra = Container::app();
