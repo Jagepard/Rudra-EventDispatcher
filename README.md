@@ -11,3 +11,6 @@
 
 # Rudra-EventDispatcher
 Диспетчер событий
+
+#### Установка / Install
+```composer require rudra/event-dispatcher```
