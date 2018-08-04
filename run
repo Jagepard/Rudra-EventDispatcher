@@ -1,9 +1,0 @@
-#! usr/bin/env php
-<?php
-
-namespace Behavioral\Mediator;
-
-require_once 'vendor/autoload.php';
-
-$controller = new ConcreteColleague1();
-$controller->indexAction();
