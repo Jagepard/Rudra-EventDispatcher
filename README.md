@@ -14,3 +14,31 @@
 
 #### Установка / Install
 ```composer require rudra/event-dispatcher```
+#### Использование / Usage
+```php
+use Rudra\Container;
+use Rudra\EventDispatcher;
+use Rudra\ContainerInterface;
+```
+```php
+$rudra = Container::app();
+```
+##### Вызов из контейнера / use container
+```php
+$services = [
+    'contracts' => [
+        ContainerInterface::class => $rudra,
+    ],
+    
+    'services' => [
+        // Another services
+        
+        'event.dispatcher' => ['Rudra\EventDispatcher'],
+        
+        // Another services
+    ]
+];
+```
+```php
+$rudra->setServices($services); 
+```
