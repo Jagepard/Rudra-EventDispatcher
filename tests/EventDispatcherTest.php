@@ -13,6 +13,7 @@ namespace Rudra\Tests;
 use Rudra\Container;
 use Rudra\EventDispatcher;
 use Rudra\Interfaces\ContainerInterface;
+use Rudra\Tests\stub\Controllers\TestController;
 use Rudra\Tests\stub\Events\AppEvents;
 use Rudra\Tests\stub\Events\SomeEvent;
 use Rudra\Tests\stub\Listeners\AppListener;
@@ -81,6 +82,18 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->container()->get('one'), 'one');
         $this->assertEquals($this->container()->get('two'), 'two');
+    }
+
+    public function testPublisher(): void
+    {
+        $this->container()->get('event.dispatcher')->attachSubscriber('before', new TestController($this->container()));
+        $this->container()->get('event.dispatcher')->notify('before');
+        $this->assertEquals($this->container()->get('subscriber'), 'before');
+
+        $this->container()->get('event.dispatcher')->detachSubscriber('before', new TestController($this->container()));
+        $this->container()->get('event.dispatcher')->attachSubscriber('after', new TestController($this->container()));
+        $this->container()->get('event.dispatcher')->notify('after');
+        $this->assertEquals($this->container()->get('subscriber'), 'after');
     }
 
     public function container(): ContainerInterface
