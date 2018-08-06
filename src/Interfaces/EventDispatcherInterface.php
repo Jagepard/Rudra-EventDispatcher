@@ -35,4 +35,21 @@ interface EventDispatcherInterface
      * @return mixed
      */
     public function dispatch(string $name);
+
+    /**
+     * @param string                      $event
+     * @param ObserverSubscriberInterface $subscriber
+     */
+    public function attachSubscriber(string $event, ObserverSubscriberInterface $subscriber): void;
+
+    /**
+     * @param string                      $event
+     * @param ObserverSubscriberInterface $subscriber
+     */
+    public function detachSubscriber(string $event, ObserverSubscriberInterface $subscriber): void;
+
+    /**
+     * @param string $event
+     */
+    public function notify(string $event): void;
 }

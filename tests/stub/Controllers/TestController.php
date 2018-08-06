@@ -2,10 +2,10 @@
 
 namespace Rudra\Tests\stub\Controllers;
 
-use Rudra\Interfaces\SubscriberInterface;
+use Rudra\Interfaces\ObserverSubscriberInterface;
 use Rudra\ExternalTraits\SetContainerTrait;
 
-class TestController implements SubscriberInterface
+class TestController implements ObserverSubscriberInterface
 {
 
     use SetContainerTrait;

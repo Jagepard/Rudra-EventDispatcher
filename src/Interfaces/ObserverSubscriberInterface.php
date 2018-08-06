@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace Rudra\Interfaces;
 
 /**
- * Interface SubscriberInterface
+ * Interface ObserverSubscriberInterface
  * @package Rudra\Interfaces
  */
-interface SubscriberInterface
+interface ObserverSubscriberInterface
 {
 
 }
