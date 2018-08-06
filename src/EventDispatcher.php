@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Rudra;
 
-use Rudra\Interfaces\PublisherInterface;
+use Rudra\Interfaces\EventPublisherInterface;
 use Rudra\Interfaces\SubscriberInterface;
 use Rudra\Interfaces\EventDispatcherInterface;
 use Rudra\Interfaces\EventSubscriberInterface;
@@ -19,7 +19,7 @@ use Rudra\Interfaces\EventSubscriberInterface;
  * Class EventDispatcher
  * @package Rudra
  */
-class EventDispatcher implements EventDispatcherInterface, PublisherInterface
+class EventDispatcher implements EventDispatcherInterface, EventPublisherInterface
 {
 
     /**
