@@ -14,7 +14,7 @@ namespace Rudra\Interfaces;
  * Interface PublisherInterface
  * @package Rudra\Interfaces
  */
-interface PublisherInterface
+interface EventPublisherInterface
 {
 
     /**
