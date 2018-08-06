@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Rudra;
 
+use Rudra\Interfaces\PublisherInterface;
+use Rudra\Interfaces\SubscriberInterface;
 use Rudra\Interfaces\EventDispatcherInterface;
 use Rudra\Interfaces\EventSubscriberInterface;
 
@@ -17,7 +19,7 @@ use Rudra\Interfaces\EventSubscriberInterface;
  * Class EventDispatcher
  * @package Rudra
  */
-class EventDispatcher implements EventDispatcherInterface
+class EventDispatcher implements EventDispatcherInterface, PublisherInterface
 {
 
     /**
@@ -28,6 +30,10 @@ class EventDispatcher implements EventDispatcherInterface
      * @var array
      */
     protected $listeners = [];
+    /**
+     * @var array
+     */
+    protected $subscribers = [];
 
     /**
      * @param string $name
@@ -72,5 +78,37 @@ class EventDispatcher implements EventDispatcherInterface
         $listener = $this->listeners[$name];
 
         $listener->$event();
+    }
+
+    /**
+     * @param string              $event
+     * @param SubscriberInterface $subscriber
+     */
+    public function attachSubscriber(string $event, SubscriberInterface $subscriber): void
+    {
+        $this->subscribers[$event][get_class($subscriber)] = $subscriber;
+    }
+
+    /**
+     * @param string              $event
+     * @param SubscriberInterface $subscriber
+     */
+    public function detachSubscriber(string $event, SubscriberInterface $subscriber): void
+    {
+        if (array_key_exists(get_class($subscriber), $this->subscribers[$event])) {
+            unset($this->subscribers[get_class($subscriber)]);
+        }
+    }
+
+    /**
+     * @param string $event
+     */
+    public function notify(string $event): void
+    {
+        foreach ($this->subscribers[$event] as $subscriber) {
+            if (method_exists($subscriber, $event)) {
+                $subscriber->$event();
+            }
+        }
     }
 }
