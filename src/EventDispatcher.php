@@ -10,16 +10,15 @@ declare(strict_types=1);
 
 namespace Rudra;
 
-use Rudra\Interfaces\EventPublisherInterface;
-use Rudra\Interfaces\SubscriberInterface;
 use Rudra\Interfaces\EventDispatcherInterface;
 use Rudra\Interfaces\EventSubscriberInterface;
+use Rudra\Interfaces\ObserverSubscriberInterface;
 
 /**
  * Class EventDispatcher
  * @package Rudra
  */
-class EventDispatcher implements EventDispatcherInterface, EventPublisherInterface
+class EventDispatcher implements EventDispatcherInterface
 {
 
     /**
@@ -81,19 +80,19 @@ class EventDispatcher implements EventDispatcherInterface, EventPublisherInterfa
     }
 
     /**
-     * @param string              $event
-     * @param SubscriberInterface $subscriber
+     * @param string                      $event
+     * @param ObserverSubscriberInterface $subscriber
      */
-    public function attachSubscriber(string $event, SubscriberInterface $subscriber): void
+    public function attachSubscriber(string $event, ObserverSubscriberInterface $subscriber): void
     {
         $this->subscribers[$event][get_class($subscriber)] = $subscriber;
     }
 
     /**
-     * @param string              $event
-     * @param SubscriberInterface $subscriber
+     * @param string                      $event
+     * @param ObserverSubscriberInterface $subscriber
      */
-    public function detachSubscriber(string $event, SubscriberInterface $subscriber): void
+    public function detachSubscriber(string $event, ObserverSubscriberInterface $subscriber): void
     {
         if (array_key_exists(get_class($subscriber), $this->subscribers[$event])) {
             unset($this->subscribers[get_class($subscriber)]);
