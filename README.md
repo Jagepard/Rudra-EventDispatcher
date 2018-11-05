@@ -9,7 +9,7 @@
 [![Total Downloads](https://poser.pugx.org/rudra/event-dispatcher/downloads)](https://packagist.org/packages/rudra/event-dispatcher)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-498e7f.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-# Rudra-EventDispatcher
+# Rudra-EventDispatcher | [API](https://github.com/Jagepard/Rudra-EventDispatcher/blob/master/docs.md "Documentation API")
 Диспетчер событий
 
 #### Установка / Install
