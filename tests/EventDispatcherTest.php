@@ -88,13 +88,13 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
 
     public function testPublisher(): void
     {
-        $this->container()->get('event.dispatcher')->attachSubscriber('before', new TestController($this->container()));
-        $this->container()->get('event.dispatcher')->notify('before');
+        $this->subscribe('before', new TestController($this->container()));
+        $this->notify('before');
         $this->assertEquals($this->container()->get('subscriber'), 'before');
 
         $this->container()->get('event.dispatcher')->detachSubscriber('before', new TestController($this->container()));
-        $this->container()->get('event.dispatcher')->attachSubscriber('after', new TestController($this->container()));
-        $this->container()->get('event.dispatcher')->notify('after');
+        $this->subscribe('after', new TestController($this->container()));
+        $this->notify('after');
         $this->assertEquals($this->container()->get('subscriber'), 'after');
     }
 

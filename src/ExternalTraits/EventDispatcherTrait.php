@@ -12,6 +12,7 @@ namespace Rudra\ExternalTraits;
 
 use Rudra\Interfaces\ContainerInterface;
 use Rudra\Interfaces\EventSubscriberInterface;
+use Rudra\Interfaces\ObserverSubscriberInterface;
 
 /**
  * Trait EventDispatcherTrait
@@ -46,6 +47,23 @@ trait EventDispatcherTrait
     public function dispatch(string $event)
     {
         return $this->container()->get('event.dispatcher')->dispatch($event);
+    }
+
+    /**
+     * @param string                      $event
+     * @param ObserverSubscriberInterface $subscriber
+     */
+    public function subscribe(string $event, ObserverSubscriberInterface $subscriber): void
+    {
+        $this->container()->get('event.dispatcher')->attachSubscriber($event, $subscriber);
+    }
+
+    /**
+     * @param string $event
+     */
+    public function notify(string $event): void
+    {
+        $this->container()->get('event.dispatcher')->notify($event);
     }
 
     /**
