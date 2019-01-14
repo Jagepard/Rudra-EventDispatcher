@@ -32,22 +32,29 @@ class EventDispatcher implements EventDispatcherInterface
     /**
      * @var array
      */
+    protected $arguments = [];
+    /**
+     * @var array
+     */
     protected $subscribers = [];
 
     /**
-     * @param string $name
-     * @param        $listener
-     * @return mixed
+     * @param string     $event
+     * @param            $listener
+     * @param array|null $arguments
+     * @return mixed|void
      */
-    public function addListener(string $name, $listener)
+    public function addListener(string $event, $listener, array $arguments = null)
     {
         if ($listener instanceof \Closure) {
-            $this->listeners[$name] = $listener;
+            $this->listeners[$event] = $listener;
             return;
         }
 
-        $this->methods[$name]   = $listener[1];
-        $this->listeners[$name] = $listener[0];
+        $this->methods[$event]   = $listener[1];
+        $this->listeners[$event] = $listener[0];
+
+        if (isset($arguments)) $this->arguments[$event] = $arguments;
     }
 
     /**
@@ -64,19 +71,21 @@ class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
-     * @param string $name
+     * @param string $event
      * @return mixed
      */
-    public function dispatch(string $name)
+    public function dispatch(string $event)
     {
-        if ($this->listeners[$name] instanceof \Closure) {
-            return $this->listeners[$name];
+        if ($this->listeners[$event] instanceof \Closure) {
+            return $this->listeners[$event];
         }
 
-        $event    = $this->methods[$name];
-        $listener = $this->listeners[$name];
+        $method   = $this->methods[$event];
+        $listener = $this->listeners[$event];
 
-        $listener->$event();
+        return (isset($this->arguments[$event]))
+            ? $listener->$method(...$this->arguments[$event])
+            : $listener->$method();
     }
 
     /**

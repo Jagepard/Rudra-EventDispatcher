@@ -21,13 +21,13 @@ trait EventDispatcherTrait
 {
 
     /**
-     * @param string $name
-     * @param        $listener
-     * @return mixed
+     * @param string     $event
+     * @param            $listener
+     * @param array|null $arguments
      */
-    public function addListener(string $name, $listener)
+    public function addListener(string $event, $listener, array $arguments = null)
     {
-        $this->container()->get('event.dispatcher')->addListener($name, $listener);
+        $this->container()->get('event.dispatcher')->addListener($event, $listener, $arguments);
     }
 
     /**
@@ -40,12 +40,12 @@ trait EventDispatcherTrait
     }
 
     /**
-     * @param string $name
+     * @param string $event
      * @return mixed
      */
-    public function dispatch(string $name)
+    public function dispatch(string $event)
     {
-        return $this->container()->get('event.dispatcher')->dispatch($name);
+        return $this->container()->get('event.dispatcher')->dispatch($event);
     }
 
     /**

@@ -13,4 +13,9 @@ class AppListener
     {
         $this->container()->set('listener', 'listener', 'raw');
     }
+
+    public function onParams(string $data)
+    {
+        return $data;
+    }
 }
