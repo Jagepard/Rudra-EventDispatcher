@@ -47,6 +47,7 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
         $this->container()->set('event.dispatcher', EventDispatcher::class);
 
         $this->addListener(AppEvents::APP_LISTENER, [$this->listener, 'onEvent']);
+        $this->addListener(AppEvents::APP_PARAMS, [$this->listener, 'onParams'], ['data']);
         $this->addListener(AppEvents::APP_CLOSURE, function () {
             $this->container()->set('closure', 'closure', 'raw');;
         });
@@ -64,6 +65,7 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
     {
         $this->container()->get('event.dispatcher')->dispatch('app.listener');
         $this->assertEquals($this->container()->get('listener'), 'listener');
+        $this->assertEquals($this->container()->get('event.dispatcher')->dispatch(AppEvents::APP_PARAMS), 'data');
     }
 
     public function testClosure(): void
