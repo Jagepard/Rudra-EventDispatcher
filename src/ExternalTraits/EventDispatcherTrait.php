@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Rudra\ExternalTraits;
 
-use Rudra\Interfaces\ContainerInterface;
 use Rudra\Interfaces\EventSubscriberInterface;
 use Rudra\Interfaces\ObserverSubscriberInterface;
 
@@ -28,7 +27,7 @@ trait EventDispatcherTrait
      */
     public function addListener(string $event, $listener, array $arguments = null)
     {
-        $this->container()->get('event.dispatcher')->addListener($event, $listener, $arguments);
+        rudra()->get('event.dispatcher')->addListener($event, $listener, $arguments);
     }
 
     /**
@@ -37,7 +36,7 @@ trait EventDispatcherTrait
      */
     public function addSubscribers(EventSubscriberInterface $subscriber, $event = null): void
     {
-        $this->container()->get('event.dispatcher')->addSubscribers($subscriber, $event);
+        rudra()->get('event.dispatcher')->addSubscribers($subscriber, $event);
     }
 
     /**
@@ -46,7 +45,7 @@ trait EventDispatcherTrait
      */
     public function dispatch(string $event)
     {
-        return $this->container()->get('event.dispatcher')->dispatch($event);
+        return rudra()->get('event.dispatcher')->dispatch($event);
     }
 
     /**
@@ -55,7 +54,7 @@ trait EventDispatcherTrait
      */
     public function subscribe(string $event, ObserverSubscriberInterface $subscriber): void
     {
-        $this->container()->get('event.dispatcher')->attachSubscriber($event, $subscriber);
+        rudra()->get('event.dispatcher')->attachSubscriber($event, $subscriber);
     }
 
     /**
@@ -63,11 +62,6 @@ trait EventDispatcherTrait
      */
     public function notify(string $event): void
     {
-        $this->container()->get('event.dispatcher')->notify($event);
+        rudra()->get('event.dispatcher')->notify($event);
     }
-
-    /**
-     * @return ContainerInterface
-     */
-    abstract public function container(): ContainerInterface;
 }
