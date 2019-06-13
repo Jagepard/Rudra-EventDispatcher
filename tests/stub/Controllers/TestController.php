@@ -7,7 +7,6 @@ use Rudra\ExternalTraits\SetContainerTrait;
 
 class TestController implements ObserverSubscriberInterface
 {
-
     use SetContainerTrait;
 
     public function before()
