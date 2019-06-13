@@ -7,7 +7,6 @@ use Rudra\ExternalTraits\SetContainerTrait;
 
 class SomeEvent implements EventInterface
 {
-
     use SetContainerTrait;
 
     public function oneEvent()

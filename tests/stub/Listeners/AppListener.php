@@ -6,7 +6,6 @@ use Rudra\ExternalTraits\SetContainerTrait;
 
 class AppListener
 {
-
     use SetContainerTrait;
 
     public function onEvent()
