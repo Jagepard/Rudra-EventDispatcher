@@ -1,21 +1,19 @@
 <?php
 
-namespace Rudra\Tests\stub\Controllers;
+namespace Rudra\EventDispatcher\Tests\Stub\Controllers;
 
-use Rudra\Interfaces\ObserverSubscriberInterface;
-use Rudra\ExternalTraits\SetContainerTrait;
+use Rudra\Container\Facades\Rudra;
+use Rudra\EventDispatcher\ObserverSubscriberInterface;
 
 class TestController implements ObserverSubscriberInterface
 {
-    use SetContainerTrait;
-
     public function before()
     {
-        $this->container()->set('subscriber', 'before', 'raw');
+        Rudra::config()->set(["subscriber" => "before"]);
     }
 
     public function after()
     {
-        $this->container()->set('subscriber', 'after', 'raw');
+        Rudra::config()->set(["subscriber" => "after"]);
     }
 }

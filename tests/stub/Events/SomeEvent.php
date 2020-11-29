@@ -1,21 +1,19 @@
 <?php
 
-namespace Rudra\Tests\stub\Events;
+namespace Rudra\EventDispatcher\Tests\Stub\Events;
 
-use Rudra\Interfaces\EventInterface;
-use Rudra\ExternalTraits\SetContainerTrait;
+use Rudra\Container\Facades\Rudra;
+use Rudra\EventDispatcher\EventInterface;
 
 class SomeEvent implements EventInterface
 {
-    use SetContainerTrait;
-
     public function oneEvent()
     {
-        $this->container()->set('one', 'one', 'raw');
+        Rudra::config()->set(["one" => "one"]);
     }
 
     public function twoEvent()
     {
-        $this->container()->set('two', 'two', 'raw');
+        Rudra::config()->set(["two" => "two"]);
     }
 }

@@ -4,41 +4,18 @@ declare(strict_types=1);
 
 /**
  * @author    : Jagepard <jagepard@yandex.ru">
- * @copyright Copyright (c) 2019, Jagepard
  * @license   https://mit-license.org/ MIT
  */
 
-namespace Rudra;
-
-use Rudra\Interfaces\EventDispatcherInterface;
-use Rudra\Interfaces\EventSubscriberInterface;
-use Rudra\Interfaces\ObserverSubscriberInterface;
+namespace Rudra\EventDispatcher;
 
 class EventDispatcher implements EventDispatcherInterface
 {
-    /**
-     * @var array
-     */
-    protected $methods = [];
-    /**
-     * @var array
-     */
-    protected $listeners = [];
-    /**
-     * @var array
-     */
-    protected $arguments = [];
-    /**
-     * @var array
-     */
-    protected $subscribers = [];
+    protected array $methods = [];
+    protected array $listeners = [];
+    protected array $arguments = [];
+    protected array $subscribers = [];
 
-    /**
-     * @param string     $event
-     * @param            $listener
-     * @param array|null $arguments
-     * @return mixed|void
-     */
     public function addListener(string $event, $listener, array $arguments = null)
     {
         if ($listener instanceof \Closure) {
@@ -52,10 +29,6 @@ class EventDispatcher implements EventDispatcherInterface
         if (isset($arguments)) $this->arguments[$event] = $arguments;
     }
 
-    /**
-     * @param EventSubscriberInterface $subscriber
-     * @param null                     $event
-     */
     public function addSubscribers(EventSubscriberInterface $subscriber, $event = null): void
     {
         foreach ($subscriber->getSubscribedEvents() as $name => $method) {
@@ -65,10 +38,6 @@ class EventDispatcher implements EventDispatcherInterface
         }
     }
 
-    /**
-     * @param string $event
-     * @return mixed
-     */
     public function dispatch(string $event)
     {
         if ($this->listeners[$event] instanceof \Closure) {
@@ -83,19 +52,11 @@ class EventDispatcher implements EventDispatcherInterface
             : $listener->$method();
     }
 
-    /**
-     * @param string                      $event
-     * @param ObserverSubscriberInterface $subscriber
-     */
     public function attachSubscriber(string $event, ObserverSubscriberInterface $subscriber): void
     {
         $this->subscribers[$event][get_class($subscriber)] = $subscriber;
     }
 
-    /**
-     * @param string                      $event
-     * @param ObserverSubscriberInterface $subscriber
-     */
     public function detachSubscriber(string $event, ObserverSubscriberInterface $subscriber): void
     {
         if (array_key_exists(get_class($subscriber), $this->subscribers[$event])) {
@@ -103,9 +64,6 @@ class EventDispatcher implements EventDispatcherInterface
         }
     }
 
-    /**
-     * @param string $event
-     */
     public function notify(string $event): void
     {
         foreach ($this->subscribers[$event] as $subscriber) {

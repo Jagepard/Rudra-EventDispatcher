@@ -1,6 +1,6 @@
 <?php
 
-namespace Rudra\Tests\stub\Events;
+namespace Rudra\EventDispatcher\Tests\Stub\Events;
 
 class AppEvents
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Rudra\Tests\stub\Subscribers;
+namespace Rudra\EventDispatcher\Tests\Stub\Subscribers;
 
-use Rudra\Tests\stub\Events\AppEvents;
-use Rudra\Interfaces\EventSubscriberInterface;
+use Rudra\EventDispatcher\Tests\Stub\Events\AppEvents;
+use Rudra\EventDispatcher\EventSubscriberInterface;
 
 class AppSubscriber implements EventSubscriberInterface
 {

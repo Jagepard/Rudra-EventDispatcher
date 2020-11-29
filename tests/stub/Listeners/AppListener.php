@@ -1,16 +1,14 @@
 <?php
 
-namespace Rudra\Tests\stub\Listeners;
+namespace Rudra\EventDispatcher\Tests\Stub\Listeners;
 
-use Rudra\ExternalTraits\SetContainerTrait;
+use Rudra\Container\Facades\Rudra;
 
 class AppListener
 {
-    use SetContainerTrait;
-
     public function onEvent()
     {
-        $this->container()->set('listener', 'listener', 'raw');
+        Rudra::config()->set(["listener" => "listener"]);
     }
 
     public function onParams(string $data)

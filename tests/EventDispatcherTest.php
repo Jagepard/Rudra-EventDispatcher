@@ -8,93 +8,77 @@ declare(strict_types=1);
  * @license   https://mit-license.org/ MIT
  */
 
-namespace Rudra\Tests;
+namespace Rudra\EventDispatcher\Tests;
 
-use Rudra\Container;
-use Rudra\EventDispatcher;
-use Rudra\Interfaces\ContainerInterface;
-use Rudra\Tests\stub\Controllers\TestController;
-use Rudra\Tests\stub\Events\AppEvents;
-use Rudra\Tests\stub\Events\SomeEvent;
-use Rudra\Tests\stub\Listeners\AppListener;
-use Rudra\Interfaces\EventDispatcherInterface;
-use Rudra\ExternalTraits\EventDispatcherTrait;
-use Rudra\Tests\stub\Subscribers\AppSubscriber;
+use Rudra\Container\Facades\Rudra;
+use Rudra\EventDispatcher\EventDispatcher;
+use Rudra\EventDispatcher\EventDispatcherFacade;
+use Rudra\EventDispatcher\Tests\Stub\Controllers\TestController;
+use Rudra\EventDispatcher\Tests\Stub\Events\AppEvents;
+use Rudra\EventDispatcher\Tests\Stub\Events\SomeEvent;
+use Rudra\EventDispatcher\Tests\Stub\Listeners\AppListener;
+use Rudra\EventDispatcher\EventDispatcherInterface;
+use Rudra\EventDispatcher\Tests\Stub\Subscribers\AppSubscriber;
 use PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
 
 class EventDispatcherTest extends PHPUnit_Framework_TestCase
 {
-    use EventDispatcherTrait;
-
-    /**
-     * @var AppListener
-     */
-    protected $listener;
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
+    protected AppListener $listener;
 
     protected function setUp(): void
     {
-        $this->container = Container::app();
-        $this->listener = new AppListener($this->container);
-        $this->container()->set('event.dispatcher', EventDispatcher::class);
+        $this->listener = new AppListener();
+        Rudra::set([EventDispatcher::class, EventDispatcher::class]);
 
-        $this->addListener(AppEvents::APP_LISTENER, [$this->listener, 'onEvent']);
-        $this->addListener(AppEvents::APP_PARAMS, [$this->listener, 'onParams'], ['data']);
-        $this->addListener(AppEvents::APP_CLOSURE, function () {
-            $this->container()->set('closure', 'closure', 'raw');;
+        EventDispatcherFacade::addListener(AppEvents::APP_LISTENER, [$this->listener, 'onEvent']);
+        EventDispatcherFacade::addListener(AppEvents::APP_PARAMS, [$this->listener, 'onParams'], ['data']);
+        EventDispatcherFacade::addListener(AppEvents::APP_CLOSURE, function () {
+            Rudra::config()->set(["closure" => "closure"]);
         });
 
-        $this->addSubscribers(new AppSubscriber(), new SomeEvent($this->container()));
+        EventDispatcherFacade::addSubscribers(new AppSubscriber(), new SomeEvent());
     }
 
     public function testInstance(): void
     {
-        $this->assertInstanceOf(EventDispatcherInterface::class, $this->container()->get('event.dispatcher'));
+        $this->assertInstanceOf(EventDispatcherInterface::class, Rudra::get(EventDispatcher::class));
         $this->assertInstanceOf(AppListener::class, $this->listener);
     }
 
     public function testListener(): void
     {
-        $this->container()->get('event.dispatcher')->dispatch('app.listener');
-        $this->assertEquals($this->container()->get('listener'), 'listener');
-        $this->assertEquals($this->container()->get('event.dispatcher')->dispatch(AppEvents::APP_PARAMS), 'data');
+        EventDispatcherFacade::dispatch('app.listener');
+        $this->assertEquals(Rudra::config()->get('listener'), 'listener');
+        $this->assertEquals(EventDispatcherFacade::dispatch(AppEvents::APP_PARAMS), 'data');
     }
 
     public function testClosure(): void
     {
-        $closure = $this->dispatch('app.closure');
+        $closure = EventDispatcherFacade::dispatch('app.closure');
         $closure();
 
-        $this->assertEquals($this->container()->get('closure'), 'closure');
+        $this->assertEquals(Rudra::config()->get('closure'), 'closure');
         $this->assertInstanceOf(\Closure::class, $closure);
     }
 
     public function testSubscribers(): void
     {
-        $this->dispatch('sub.listener');
-        $this->dispatch('sub.closure');
+        EventDispatcherFacade::dispatch('sub.listener');
+        EventDispatcherFacade::dispatch('sub.closure');
 
-        $this->assertEquals($this->container()->get('one'), 'one');
-        $this->assertEquals($this->container()->get('two'), 'two');
+        $this->assertEquals(Rudra::config()->get('one'), 'one');
+        $this->assertEquals(Rudra::config()->get('two'), 'two');
     }
 
     public function testPublisher(): void
     {
-        $this->subscribe('before', new TestController($this->container()));
-        $this->notify('before');
-        $this->assertEquals($this->container()->get('subscriber'), 'before');
+        EventDispatcherFacade::attachSubscriber('before', new TestController());
+        EventDispatcherFacade::notify('before');
+        $this->assertEquals(Rudra::config()->get('subscriber'), 'before');
 
-        $this->container()->get('event.dispatcher')->detachSubscriber('before', new TestController($this->container()));
-        $this->subscribe('after', new TestController($this->container()));
-        $this->notify('after');
-        $this->assertEquals($this->container()->get('subscriber'), 'after');
-    }
-
-    public function container(): ContainerInterface
-    {
-        return $this->container;
+        EventDispatcherFacade::detachSubscriber('before', new TestController());
+        EventDispatcherFacade::attachSubscriber('after', new TestController());
+        EventDispatcherFacade::notify('after');
+        $this->assertEquals(Rudra::config()->get('subscriber'), 'after');
     }
 }
