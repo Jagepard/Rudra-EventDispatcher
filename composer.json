@@ -6,10 +6,10 @@
         "rudra",
         "event-dispatcher"
     ],
-    "license"           : "GPL-3.0-or-later",
+    "license"           : "MIT",
     "authors"           : [
         {
-            "name"     : "Danila Korotkov (Jagepard)",
+            "name"     : "Jagepard",
             "email"    : "jagepard@yandex.ru",
             "homepage" : "https://jagepard.ru",
             "role"     : "Developer"
@@ -20,20 +20,17 @@
         "skype" : "jagepard.ru"
     },
     "require"           : {
-        "php"               : ">=7.2",
+        "php"               : ">=7.4",
         "rudra/container"   : "self.version"
-    },
-    "require-dev"       : {
-        "phpunit/phpunit": "^7",
     },
     "autoload"          : {
         "psr-4" : {
-            "Rudra\\" : "src/"
+            "Rudra\\EventDispatcher\\" : "src/"
         }
     },
     "autoload-dev" : {
         "psr-4": {
-            "Rudra\\Tests\\" : "tests/"
+            "Rudra\\EventDispatcher\\Tests\\" : "tests/"
         }
     },
     "minimum-stability" : "dev",
