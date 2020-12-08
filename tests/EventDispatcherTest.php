@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 /**
  * @author    : Jagepard <jagepard@yandex.ru">
- * @copyright Copyright (c) 2019, Jagepard
  * @license   https://mit-license.org/ MIT
  */
 
@@ -15,10 +14,8 @@ use Rudra\EventDispatcher\EventDispatcher;
 use Rudra\EventDispatcher\EventDispatcherFacade;
 use Rudra\EventDispatcher\Tests\Stub\Controllers\TestController;
 use Rudra\EventDispatcher\Tests\Stub\Events\AppEvents;
-use Rudra\EventDispatcher\Tests\Stub\Events\SomeEvent;
 use Rudra\EventDispatcher\Tests\Stub\Listeners\AppListener;
 use Rudra\EventDispatcher\EventDispatcherInterface;
-use Rudra\EventDispatcher\Tests\Stub\Subscribers\AppSubscriber;
 use PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
 
 class EventDispatcherTest extends PHPUnit_Framework_TestCase
@@ -35,8 +32,6 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
         EventDispatcherFacade::addListener(AppEvents::APP_CLOSURE, function () {
             Rudra::config()->set(["closure" => "closure"]);
         });
-
-        EventDispatcherFacade::addSubscribers(new AppSubscriber(), new SomeEvent());
     }
 
     public function testInstance(): void
@@ -59,15 +54,6 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(Rudra::config()->get('closure'), 'closure');
         $this->assertInstanceOf(\Closure::class, $closure);
-    }
-
-    public function testSubscribers(): void
-    {
-        EventDispatcherFacade::dispatch('sub.listener');
-        EventDispatcherFacade::dispatch('sub.closure');
-
-        $this->assertEquals(Rudra::config()->get('one'), 'one');
-        $this->assertEquals(Rudra::config()->get('two'), 'two');
     }
 
     public function testPublisher(): void

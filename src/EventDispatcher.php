@@ -29,15 +29,6 @@ class EventDispatcher implements EventDispatcherInterface
         if (isset($arguments)) $this->arguments[$event] = $arguments;
     }
 
-    public function addSubscribers(EventSubscriberInterface $subscriber, $event = null): void
-    {
-        foreach ($subscriber->getSubscribedEvents() as $name => $method) {
-            isset($event)
-                ? $this->addListener($name, [$event, $method])
-                : $this->addListener($name, [$subscriber, $method]);
-        }
-    }
-
     public function dispatch(string $event, array $arguments = null)
     {
         if ($this->listeners[$event] instanceof \Closure) {
