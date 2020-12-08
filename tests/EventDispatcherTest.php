@@ -58,12 +58,14 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
 
     public function testPublisher(): void
     {
-        EventDispatcherFacade::attachObserver("main", "before", new TestController());
+        $test = new TestController();
+
+        EventDispatcherFacade::attachObserver("main", "before", [$test, "before"]);
         EventDispatcherFacade::notify("main","before");
         $this->assertEquals(Rudra::config()->get('subscriber'), "before");
 
-        EventDispatcherFacade::detachObserver("main", "before", new TestController());
-        EventDispatcherFacade::attachObserver("main", "after", new TestController());
+        EventDispatcherFacade::detachObserver("main", "before", TestController::class);
+        EventDispatcherFacade::attachObserver("main", "after", [$test, "after"]);
         EventDispatcherFacade::notify("main","after");
         $this->assertEquals(Rudra::config()->get('subscriber'), "after");
     }
