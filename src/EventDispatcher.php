@@ -11,9 +11,7 @@ namespace Rudra\EventDispatcher;
 
 class EventDispatcher implements EventDispatcherInterface
 {
-    protected array $methods = [];
     protected array $listeners = [];
-    protected array $arguments = [];
     protected array $observers = [];
 
     public function addListener(string $event, $listener, array $arguments = null)
@@ -23,10 +21,10 @@ class EventDispatcher implements EventDispatcherInterface
             return;
         }
 
-        $this->methods[$event]   = $listener[1];
-        $this->listeners[$event] = $listener[0];
+        $this->listeners[$event]["listener"] = $listener[0];
+        $this->listeners[$event]["method"]   = $listener[1];
 
-        if (isset($arguments)) $this->arguments[$event] = $arguments;
+        if (isset($arguments)) $this->listeners[$event]["arguments"] = $arguments;
     }
 
     public function dispatch(string $event, array $arguments = null)
@@ -35,33 +33,46 @@ class EventDispatcher implements EventDispatcherInterface
             return $this->listeners[$event];
         }
 
-        $method   = $this->methods[$event];
-        $listener = $this->listeners[$event];
+        $method   = $this->listeners[$event]["method"];
+        $listener = $this->listeners[$event]["listener"];
 
-        if (isset($arguments)) $this->arguments[$event] = $arguments;
+        if (isset($arguments)) $this->listeners[$event]["arguments"] = $arguments;
 
-        return (isset($this->arguments[$event]))
-            ? $listener->$method(...$this->arguments[$event])
+        return (isset($this->listeners[$event]["arguments"]))
+            ? $listener->$method(...$this->listeners[$event]["arguments"])
             : $listener->$method();
     }
 
-    public function attachObserver(string $subject, string $event, ObserverInterface $observer): void
+    public function attachObserver(string $publisher, string $event, $subscriber, array $arguments = null): void
     {
-        $this->observers[$subject][$event][get_class($observer)] = $observer;
+        if ($subscriber instanceof \Closure) {
+            $this->observers[$publisher][$event][] = $subscriber;
+            return;
+        }
+
+        $this->observers[$publisher][$event][get_class($subscriber[0])]["subscriber"] = $subscriber[0];
+        $this->observers[$publisher][$event][get_class($subscriber[0])]["method"]     = $subscriber[1];
+
+        if (isset($arguments)) $this->observers[$publisher][$event][get_class($subscriber[0])]["arguments"] = $arguments;
     }
 
-    public function detachObserver(string $subject, string $event, ObserverInterface $observer): void
+    public function detachObserver(string $publisher, string $event, string $subscriberName): void
     {
-        if (array_key_exists(get_class($observer), $this->observers[$subject][$event])) {
-            unset($this->observers[get_class($observer)]);
+        if (array_key_exists($subscriberName, $this->observers[$publisher][$event])) {
+            unset($this->observers[$publisher][$event][$subscriberName]);
         }
     }
 
-    public function notify(string $subject, string $event): void
+    public function notify(string $publisher, string $event): void
     {
-        foreach ($this->observers[$subject][$event] as $observer) {
-            if (method_exists($observer, $event)) {
-                $observer->$event();
+        foreach ($this->observers[$publisher][$event] as $subscriber) {
+            if (method_exists($subscriber["subscriber"], $subscriber["method"])) {
+                $observer = $subscriber["subscriber"];
+                $method   = $subscriber["method"];
+
+                (isset($subscriber["arguments"]))
+                    ? $observer->$method(...$subscriber["arguments"])
+                    : $observer->$method();
             }
         }
     }
