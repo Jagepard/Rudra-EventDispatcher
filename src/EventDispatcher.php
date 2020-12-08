@@ -14,7 +14,7 @@ class EventDispatcher implements EventDispatcherInterface
     protected array $methods = [];
     protected array $listeners = [];
     protected array $arguments = [];
-    protected array $subscribers = [];
+    protected array $observers = [];
 
     public function addListener(string $event, $listener, array $arguments = null)
     {
@@ -38,7 +38,7 @@ class EventDispatcher implements EventDispatcherInterface
         }
     }
 
-    public function dispatch(string $event)
+    public function dispatch(string $event, array $arguments = null)
     {
         if ($this->listeners[$event] instanceof \Closure) {
             return $this->listeners[$event];
@@ -47,28 +47,30 @@ class EventDispatcher implements EventDispatcherInterface
         $method   = $this->methods[$event];
         $listener = $this->listeners[$event];
 
+        if (isset($arguments)) $this->arguments[$event] = $arguments;
+
         return (isset($this->arguments[$event]))
             ? $listener->$method(...$this->arguments[$event])
             : $listener->$method();
     }
 
-    public function attachSubscriber(string $event, ObserverSubscriberInterface $subscriber): void
+    public function attachObserver(string $subject, string $event, ObserverInterface $observer): void
     {
-        $this->subscribers[$event][get_class($subscriber)] = $subscriber;
+        $this->observers[$subject][$event][get_class($observer)] = $observer;
     }
 
-    public function detachSubscriber(string $event, ObserverSubscriberInterface $subscriber): void
+    public function detachObserver(string $subject, string $event, ObserverInterface $observer): void
     {
-        if (array_key_exists(get_class($subscriber), $this->subscribers[$event])) {
-            unset($this->subscribers[get_class($subscriber)]);
+        if (array_key_exists(get_class($observer), $this->observers[$subject][$event])) {
+            unset($this->observers[get_class($observer)]);
         }
     }
 
-    public function notify(string $event): void
+    public function notify(string $subject, string $event): void
     {
-        foreach ($this->subscribers[$event] as $subscriber) {
-            if (method_exists($subscriber, $event)) {
-                $subscriber->$event();
+        foreach ($this->observers[$subject][$event] as $observer) {
+            if (method_exists($observer, $event)) {
+                $observer->$event();
             }
         }
     }

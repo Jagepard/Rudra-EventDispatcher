@@ -8,7 +8,7 @@
 
 namespace Rudra\EventDispatcher;
 
-interface ObserverSubscriberInterface
+interface ObserverInterface
 {
 
 }

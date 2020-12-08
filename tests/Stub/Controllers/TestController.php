@@ -3,9 +3,9 @@
 namespace Rudra\EventDispatcher\Tests\Stub\Controllers;
 
 use Rudra\Container\Facades\Rudra;
-use Rudra\EventDispatcher\ObserverSubscriberInterface;
+use Rudra\EventDispatcher\ObserverInterface;
 
-class TestController implements ObserverSubscriberInterface
+class TestController implements ObserverInterface
 {
     public function before()
     {
