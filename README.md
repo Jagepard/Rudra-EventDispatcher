@@ -7,7 +7,7 @@
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/Jagepard/Rudra-EventDispatcher/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 [![Latest Stable Version](https://poser.pugx.org/rudra/event-dispatcher/v/stable)](https://packagist.org/packages/rudra/event-dispatcher)
 [![Total Downloads](https://poser.pugx.org/rudra/event-dispatcher/downloads)](https://packagist.org/packages/rudra/event-dispatcher)
-[![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-498e7f.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![GitHub](https://img.shields.io/github/license/jagepard/Rudra-EventDispatcher.svg)
 
 # Rudra-EventDispatcher | [API](https://github.com/Jagepard/Rudra-EventDispatcher/blob/master/docs.md "Documentation API")
 Диспетчер событий
