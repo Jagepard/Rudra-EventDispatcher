@@ -6,12 +6,12 @@ use Rudra\Container\Facades\Rudra;
 
 class AppListener
 {
-    public function onEvent()
+    public function onEvent($data)
     {
-        Rudra::config()->set(["listener" => "listener"]);
+        Rudra::config()->set(["listener" => $data]);
     }
 
-    public function onParams(string $data)
+    public function onParams($data)
     {
         return $data;
     }
