@@ -10,12 +10,12 @@ namespace Rudra\EventDispatcher;
 use Rudra\Container\Traits\FacadeTrait;
 
 /**
- * @method static addListener(string $event, $listener, array $arguments = null)
- * @method static dispatch(string $event, array $arguments = null)
+ * @method static void addListener(string $event, $listener, ...$arguments)
+ * @method static dispatch(string $event, ...$arguments)
  *
- * @method static void attachObserver(string $publisher, string $event, $subscriber, array $arguments = null)
+ * @method static void attachObserver(string $publisher, string $event, $subscriber, ...$arguments)
  * @method static void detachObserver(string $publisher, string $event, string $subscriberName)
- * @method static void notify(string $publisher, string $event)
+ * @method static void notify(string $publisher, string $event, ...$arguments)
  *
  * @see EventDispatcherFacade
  */
