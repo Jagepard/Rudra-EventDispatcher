@@ -69,8 +69,6 @@ class EventDispatcher implements EventDispatcherInterface
     {
         foreach ($this->observers[$publisher][$event] as $observer) {
             if (method_exists($observer["subscriber"], $observer["method"])) {
-                $observer["subscriber"]->{$observer["method"]}(...$arguments);
-
                 if (count($arguments)) $observer["arguments"] = $arguments;
 
                 (isset($observer["arguments"]))
