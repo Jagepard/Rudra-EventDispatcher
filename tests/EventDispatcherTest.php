@@ -69,4 +69,9 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
         EventDispatcherFacade::notify("main","after");
         $this->assertEquals(Rudra::config()->get('subscriber'), "after");
     }
+
+    public function testGetListeners(): void
+    {
+        $this->assertIsArray(EventDispatcherFacade::getListeners());
+    }
 }
