@@ -12,6 +12,7 @@ interface EventDispatcherInterface
 {
     public function addListener(string $event, $listener, ...$arguments): void;
     public function dispatch(string $event,  ...$arguments);
+    public function getListeners();
 
     public function attachObserver(string $publisher, string $event, $subscriber, ...$arguments): void;
     public function detachObserver(string $subject, string $event, string $subscriberName): void;

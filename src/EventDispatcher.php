@@ -45,6 +45,11 @@ class EventDispatcher implements EventDispatcherInterface
             : $listener->$method();
     }
 
+    public function getListeners(): array
+    {
+        return $this->listeners;
+    }
+
     public function attachObserver(string $publisher, string $event, $subscriber, ...$arguments): void
     {
         if ($subscriber instanceof \Closure) {
