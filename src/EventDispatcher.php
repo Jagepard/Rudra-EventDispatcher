@@ -36,7 +36,7 @@ class EventDispatcher implements EventDispatcherInterface
         }
 
         $method   = $this->listeners[$event]["method"];
-        $listener = $this->listeners[$event]["listener"];
+        $listener = new $this->listeners[$event]["listener"];
 
         if (count($arguments)) $this->listeners[$event]["arguments"] = $arguments;
 
