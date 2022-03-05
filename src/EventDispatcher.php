@@ -57,7 +57,7 @@ class EventDispatcher implements EventDispatcherInterface
             return;
         }
 
-        $this->observers[$event][$subscriber[0]] = $subscriber[1];
+        $this->observers[$event][$subscriber[0]] = ['method' => $subscriber[1]];
 
         if (count($arguments)) $this->observers[$event][$subscriber[0]]["arguments"][] = $arguments;
     }
@@ -71,14 +71,14 @@ class EventDispatcher implements EventDispatcherInterface
 
     public function notify(string $event, ...$arguments): void
     {
-        foreach ($this->observers[$event] as $subscriber => $method) {
+        foreach ($this->observers[$event] as $subscriber => $data) {
             $subscriber = new $subscriber;
-            if (method_exists($subscriber, $method)) {
-                if (count($arguments)) $observer["arguments"] = $arguments;
+            if (method_exists($subscriber, $data['method'])) {
+                if (count($arguments)) $data["arguments"] = $arguments;
 
-                (isset($observer["arguments"]))
-                    ? $subscriber->{$method}(...$subscriber["arguments"])
-                    : $subscriber->{$method}();
+                (isset($data["arguments"]))
+                    ? $subscriber->{$data['method']}(...$data["arguments"])
+                    : $subscriber->{$data['method']}();
             }
         }
     }
