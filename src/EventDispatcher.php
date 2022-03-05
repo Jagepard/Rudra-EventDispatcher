@@ -50,29 +50,22 @@ class EventDispatcher implements EventDispatcherInterface
         return $this->listeners;
     }
 
-    public function attachObserver(string $publisher, string $event, $subscriber, ...$arguments): void
+    public function attachObserver(string $event, array $subscriber, ...$arguments): void
     {
         if ($subscriber instanceof \Closure) {
-            $this->observers[$publisher][$event][] = $subscriber;
+            $this->observers[$event][] = $subscriber;
             return;
         }
 
-        $this->observers[$publisher][$event][get_class($subscriber[0])]["subscriber"] = $subscriber[0];
-        $this->observers[$publisher][$event][get_class($subscriber[0])]["method"]     = $subscriber[1];
+        $this->observers[$event][] = ["subscriber" => $subscriber[0], "method" => $subscriber[1]];
 
-        if (count($arguments)) $this->observers[$publisher][$event][get_class($subscriber[0])]["arguments"] = $arguments;
+        if (count($arguments)) $this->observers[$event][$subscriber[0]]["arguments"][] = $arguments;
     }
 
-    public function detachObserver(string $publisher, string $event, string $subscriberName): void
+    public function notify(string $event, ...$arguments): void
     {
-        if (array_key_exists($subscriberName, $this->observers[$publisher][$event])) {
-            unset($this->observers[$publisher][$event][$subscriberName]);
-        }
-    }
-
-    public function notify(string $publisher, string $event, ...$arguments): void
-    {
-        foreach ($this->observers[$publisher][$event] as $observer) {
+        foreach ($this->observers[$event] as $observer) {
+            $observer["subscriber"] = new $observer["subscriber"];
             if (method_exists($observer["subscriber"], $observer["method"])) {
                 if (count($arguments)) $observer["arguments"] = $arguments;
 
@@ -81,5 +74,10 @@ class EventDispatcher implements EventDispatcherInterface
                     : $observer["subscriber"]->{$observer["method"]}();
             }
         }
+    }
+
+    public function getObservers(): array
+    {
+        return $this->observers;
     }
 }
