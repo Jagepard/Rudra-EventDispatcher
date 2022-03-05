@@ -14,10 +14,11 @@ use Rudra\Container\Traits\FacadeTrait;
  * @method static dispatch(string $event, ...$arguments)
  * @method static array getListeners()
  *
- * @method static void attachObserver(string $publisher, string $event, $subscriber, ...$arguments)
- * @method static void detachObserver(string $publisher, string $event, string $subscriberName)
- * @method static void notify(string $publisher, string $event, ...$arguments)
- *
+ * @method static void attachObserver(string $event, array $subscriber, ...$arguments)
+ * @method static void detachObserver(string $event, string $subscriberName)
+ * @method static void notify(string $event, ...$arguments)
+ * @method static array getObservers()
+ * 
  * @see EventDispatcherFacade
  */
 final class EventDispatcherFacade

@@ -57,21 +57,28 @@ class EventDispatcher implements EventDispatcherInterface
             return;
         }
 
-        $this->observers[$event][] = ["subscriber" => $subscriber[0], "method" => $subscriber[1]];
+        $this->observers[$event][$subscriber[0]] = $subscriber[1];
 
         if (count($arguments)) $this->observers[$event][$subscriber[0]]["arguments"][] = $arguments;
     }
 
+    public function detachObserver(string $event, string $subscriberName): void
+    {
+        if (array_key_exists($subscriberName, $this->observers[$event])) {
+            unset($this->observers[$event][$subscriberName]);
+        }
+    }
+
     public function notify(string $event, ...$arguments): void
     {
-        foreach ($this->observers[$event] as $observer) {
-            $observer["subscriber"] = new $observer["subscriber"];
-            if (method_exists($observer["subscriber"], $observer["method"])) {
+        foreach ($this->observers[$event] as $subscriber => $method) {
+            $subscriber = new $subscriber;
+            if (method_exists($subscriber, $method)) {
                 if (count($arguments)) $observer["arguments"] = $arguments;
 
                 (isset($observer["arguments"]))
-                    ? $observer["subscriber"]->{$observer["method"]}(...$observer["arguments"])
-                    : $observer["subscriber"]->{$observer["method"]}();
+                    ? $subscriber->{$method}(...$subscriber["arguments"])
+                    : $subscriber->{$method}();
             }
         }
     }
