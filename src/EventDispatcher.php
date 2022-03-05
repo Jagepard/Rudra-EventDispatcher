@@ -59,7 +59,7 @@ class EventDispatcher implements EventDispatcherInterface
 
         $this->observers[$event][$subscriber[0]] = ['method' => $subscriber[1]];
 
-        if (count($arguments)) $this->observers[$event][$subscriber[0]]["arguments"][] = $arguments;
+        if (count($arguments)) $this->observers[$event][$subscriber[0]]["arguments"] = $arguments;
     }
 
     public function detachObserver(string $event, string $subscriberName): void
