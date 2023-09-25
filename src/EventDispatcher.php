@@ -14,7 +14,17 @@ class EventDispatcher implements EventDispatcherInterface
     protected array $listeners = [];
     protected array $observers = [];
 
-    public function addListener(string $event, $listener, ...$arguments): void
+    /**
+     * Adds a listener for a specific event
+     * ------------------------------------
+     * Добавляет слушателя определенного события
+     *
+     * @param  string $event
+     * @param  array  $listener
+     * @param  ...$arguments
+     * @return void
+     */
+    public function addListener(string $event, \Closure|array $listener, ...$arguments): void
     {
         if ($listener instanceof \Closure) {
             $this->listeners[$event] = $listener;
@@ -29,7 +39,14 @@ class EventDispatcher implements EventDispatcherInterface
         }
     }
 
-    public function dispatch(string $event,  ...$arguments)
+    /**
+     * Undocumented function
+     *
+     * @param  string $event
+     * @param  ...$arguments
+     * @return void
+     */
+    public function dispatch(string $event, ...$arguments)
     {
         if ($this->listeners[$event] instanceof \Closure) {
             return $this->listeners[$event];
@@ -50,7 +67,7 @@ class EventDispatcher implements EventDispatcherInterface
         return $this->listeners;
     }
 
-    public function attachObserver(string $event, array $subscriber, ...$arguments): void
+    public function attachObserver(string $event, \Closure|array $subscriber, ...$arguments): void
     {
         if ($subscriber instanceof \Closure) {
             $this->observers[$event][] = $subscriber;
