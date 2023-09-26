@@ -1,4 +1,4 @@
-
+[![PHPunit](https://github.com/Jagepard/Rudra-EventDispatcher/actions/workflows/php.yml/badge.svg)](https://github.com/Jagepard/Rudra-EventDispatcher/actions/workflows/php.yml)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Jagepard/Rudra-EventDispatcher/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Jagepard/Rudra-EventDispatcher/?branch=master)
 [![Code Climate](https://codeclimate.com/github/Jagepard/Rudra-EventDispatcher/badges/gpa.svg)](https://codeclimate.com/github/Jagepard/Rudra-EventDispatcher)
 -----
