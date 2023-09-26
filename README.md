@@ -7,6 +7,7 @@
 [![Total Downloads](https://poser.pugx.org/rudra/event-dispatcher/downloads)](https://packagist.org/packages/rudra/event-dispatcher)
 ![GitHub](https://img.shields.io/github/license/jagepard/Rudra-EventDispatcher.svg) 
 
+
 # Rudra-EventDispatcher | [API](https://github.com/Jagepard/Rudra-EventDispatcher/blob/master/docs.md "Documentation API")
 Диспетчер событий
 
