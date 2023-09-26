@@ -12,10 +12,10 @@ namespace Rudra\EventDispatcher\Tests;
 use Rudra\Container\Facades\Rudra;
 use Rudra\EventDispatcher\EventDispatcher;
 use Rudra\EventDispatcher\EventDispatcherFacade;
-use Rudra\EventDispatcher\Tests\Stub\Controllers\TestController;
+use Rudra\EventDispatcher\EventDispatcherInterface;
 use Rudra\EventDispatcher\Tests\Stub\Events\AppEvents;
 use Rudra\EventDispatcher\Tests\Stub\Listeners\AppListener;
-use Rudra\EventDispatcher\EventDispatcherInterface;
+use Rudra\EventDispatcher\Tests\Stub\Controllers\TestController;
 use PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
 
 class EventDispatcherTest extends PHPUnit_Framework_TestCase
@@ -24,11 +24,10 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
 
     protected function setUp(): void
     {
-        $this->listener = new AppListener();
         Rudra::set([EventDispatcher::class, EventDispatcher::class]);
 
-        EventDispatcherFacade::addListener(AppEvents::APP_LISTENER, [$this->listener, 'onEvent']);
-        EventDispatcherFacade::addListener(AppEvents::APP_PARAMS, [$this->listener, 'onParams'], 'data');
+        EventDispatcherFacade::addListener(AppEvents::APP_LISTENER, [AppListener::class, 'onEvent']);
+        EventDispatcherFacade::addListener(AppEvents::APP_PARAMS, [AppListener::class, 'onParams'], 'data');
         EventDispatcherFacade::addListener(AppEvents::APP_CLOSURE, function () {
             Rudra::config()->set(["closure" => "closure"]);
         });
@@ -37,7 +36,7 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
     public function testInstance(): void
     {
         $this->assertInstanceOf(EventDispatcherInterface::class, Rudra::get(EventDispatcher::class));
-        $this->assertInstanceOf(AppListener::class, $this->listener);
+        $this->assertInstanceOf(AppListener::class, new AppListener());
     }
 
     public function testListener(): void

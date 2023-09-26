@@ -40,7 +40,10 @@ class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
-     * Undocumented function
+     * When an event is dispatched, it notifies listener registered with that event
+     * ----------------------------------------------------------------------------
+     * Когда событие отправляется, оно уведомляет прослушиватель, 
+     * зарегистрированный с этим событием.
      *
      * @param  string $event
      * @param  ...$arguments
@@ -62,11 +65,28 @@ class EventDispatcher implements EventDispatcherInterface
             : $listener->$method();
     }
 
+    /**
+     * Gets all listeners
+     * ------------------
+     * Получает всех слушателей
+     *
+     * @return array
+     */
     public function getListeners(): array
     {
         return $this->listeners;
     }
 
+    /**
+     * Attaches an observer
+     * --------------------
+     * Прикрепляет наблюдателя
+     *
+     * @param  string         $event
+     * @param  \Closure|array $subscriber
+     * @param  ..$arguments
+     * @return void
+     */
     public function attachObserver(string $event, \Closure|array $subscriber, ...$arguments): void
     {
         if ($subscriber instanceof \Closure) {
@@ -79,6 +99,15 @@ class EventDispatcher implements EventDispatcherInterface
         if (count($arguments)) $this->observers[$event][$subscriber[0]]["arguments"] = $arguments;
     }
 
+    /**
+     * Detaches the observer
+     * ---------------------
+     * Отсоединяет наблюдателя
+     *
+     * @param  string $event
+     * @param  string $subscriberName
+     * @return void
+     */
     public function detachObserver(string $event, string $subscriberName): void
     {
         if (array_key_exists($subscriberName, $this->observers[$event])) {
@@ -86,6 +115,15 @@ class EventDispatcher implements EventDispatcherInterface
         }
     }
 
+    /**
+     * Notifies observers of an event
+     * ------------------------------
+     * Уведомляет наблюдателей о событии
+     *
+     * @param  string $event
+     * @param  ...$arguments
+     * @return void
+     */
     public function notify(string $event, ...$arguments): void
     {
         foreach ($this->observers[$event] as $subscriber => $data) {
@@ -100,6 +138,13 @@ class EventDispatcher implements EventDispatcherInterface
         }
     }
 
+    /**
+     * Gets all observers
+     * ------------------
+     * Получает всех наблюдателей
+     *
+     * @return array
+     */
     public function getObservers(): array
     {
         return $this->observers;
