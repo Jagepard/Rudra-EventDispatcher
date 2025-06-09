@@ -3,11 +3,13 @@
 declare(strict_types=1);
 
 /**
- * @author    : Jagepard <jagepard@yandex.ru">
- * @license   https://mit-license.org/ MIT
+ * @author  : Jagepard <jagepard@yandex.ru">
+ * @license https://mit-license.org/ MIT
  */
 
 namespace Rudra\EventDispatcher;
+
+use Rudra\Exceptions\LogicException;
 
 class EventDispatcher implements EventDispatcherInterface
 {
@@ -15,10 +17,6 @@ class EventDispatcher implements EventDispatcherInterface
     protected array $observers = [];
 
     /**
-     * Adds a listener for a specific event
-     * ------------------------------------
-     * Добавляет слушателя определенного события
-     *
      * @param  string $event
      * @param  array  $listener
      * @param  ...$arguments
@@ -31,6 +29,10 @@ class EventDispatcher implements EventDispatcherInterface
             return;
         }
 
+        if (!is_array($listener) || count($listener) !== 2) {
+            throw new LogicException("Listener must be a Closure or an array with two elements.");
+        }
+
         $this->listeners[$event]["listener"] = $listener[0];
         $this->listeners[$event]["method"]   = $listener[1];
 
@@ -40,25 +42,29 @@ class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
-     * When an event is dispatched, it notifies listener registered with that event
-     * ----------------------------------------------------------------------------
-     * Когда событие отправляется, оно уведомляет прослушиватель, 
-     * зарегистрированный с этим событием.
-     *
      * @param  string $event
      * @param  ...$arguments
      * @return void
      */
     public function dispatch(string $event, ...$arguments)
     {
+        if (!isset($this->listeners[$event])) { 
+            throw new LogicException("Event '$event' does not exist.");
+        }
+
         if ($this->listeners[$event] instanceof \Closure) {
             return $this->listeners[$event];
         }
 
+        $listener = $this->listeners[$event]["listener"];
+        $listener = is_object($listener)
+            ? $listener
+            : (class_exists($listener) ? new $listener() : throw new LogicException("Subscriber class '$listener' does not exist."));
         $method   = $this->listeners[$event]["method"];
-        $listener = new $this->listeners[$event]["listener"];
 
-        if (count($arguments)) $this->listeners[$event]["arguments"] = $arguments;
+        if (count($arguments)) { 
+            $this->listeners[$event]["arguments"] = $arguments;
+        }
 
         return (isset($this->listeners[$event]["arguments"]))
             ? $listener->$method(...$this->listeners[$event]["arguments"])
@@ -66,10 +72,6 @@ class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
-     * Gets all listeners
-     * ------------------
-     * Получает всех слушателей
-     *
      * @return array
      */
     public function getListeners(): array
@@ -78,38 +80,40 @@ class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
-     * Attaches an observer
-     * --------------------
-     * Прикрепляет наблюдателя
-     *
      * @param  string         $event
-     * @param  \Closure|array $subscriber
-     * @param  ..$arguments
+     * @param  array $subscriber
+     * @param  ...$arguments
      * @return void
      */
-    public function attachObserver(string $event, \Closure|array $subscriber, ...$arguments): void
+    public function attachObserver(string $event, array $subscriber, ...$arguments): void
     {
-        if ($subscriber instanceof \Closure) {
-            $this->observers[$event][] = $subscriber;
-            return;
+        if (count($subscriber) !== 2) {
+            throw new LogicException("Subscriber must be an array with two elements.");
         }
 
-        $this->observers[$event][$subscriber[0]] = ['method' => $subscriber[1]];
+        $subscriberName = is_object($subscriber[0])
+            ? get_class($subscriber[0])
+            : $subscriber[0];
 
-        if (count($arguments)) $this->observers[$event][$subscriber[0]]["arguments"] = $arguments;
+        $this->observers[$event][$subscriberName]["class"]  = $subscriber[0];
+        $this->observers[$event][$subscriberName]["method"] = $subscriber[1];
+
+        if (count($arguments)) {
+            $this->observers[$event][$subscriberName]["arguments"] = $arguments;
+        }
     }
 
     /**
-     * Detaches the observer
-     * ---------------------
-     * Отсоединяет наблюдателя
-     *
      * @param  string $event
-     * @param  string $subscriberName
+     * @param  string $subscriber
      * @return void
      */
-    public function detachObserver(string $event, string $subscriberName): void
+    public function detachObserver(string $event, string|object $subscriber): void
     {
+        $subscriberName = is_object($subscriber)
+            ? get_class($subscriber)
+            : $subscriber;
+
         if (array_key_exists($subscriberName, $this->observers[$event])) {
             unset($this->observers[$event][$subscriberName]);
         }
@@ -117,32 +121,41 @@ class EventDispatcher implements EventDispatcherInterface
 
     /**
      * Notifies observers of an event
-     * ------------------------------
-     * Уведомляет наблюдателей о событии
-     *
+     * 
      * @param  string $event
      * @param  ...$arguments
      * @return void
      */
     public function notify(string $event, ...$arguments): void
     {
-        foreach ($this->observers[$event] as $subscriber => $data) {
-            $subscriber = new $subscriber;
-            if (method_exists($subscriber, $data['method'])) {
-                if (count($arguments)) $data["arguments"] = $arguments;
+        if (!isset($this->observers[$event])) {
+            throw new LogicException("Event '$event' does not exist.");
+        }
 
-                (isset($data["arguments"]))
-                    ? $subscriber->{$data['method']}(...$data["arguments"])
-                    : $subscriber->{$data['method']}();
+        foreach ($this->observers[$event] as $subscriber) {
+            
+            $class  = $subscriber["class"];
+            $method = $subscriber["method"];
+            $args   = $subscriber['arguments'] ?? $arguments;
+
+            if ($method instanceof \Closure) {
+                $method(...$args);
+                continue;
             }
+
+            $object = is_object($class)
+                ? $class
+                : (class_exists($class) ? new $class() : throw new LogicException("Subscriber class '{$class}' does not exist."));
+
+            if (!method_exists($object, $method)) {
+                throw new LogicException("Method '$method' does not exist in subscriber.");
+            }
+
+            $object->{$method}(...$args);
         }
     }
 
     /**
-     * Gets all observers
-     * ------------------
-     * Получает всех наблюдателей
-     *
      * @return array
      */
     public function getObservers(): array
