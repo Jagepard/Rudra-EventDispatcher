@@ -37,4 +37,3 @@ $services = [
 ```php
 $rudra->setServices($services); 
 ```
-![Rudra-EventDispatcher](https://github.com/Jagepard/Rudra-EventDispatcher/blob/master/UML.png)
