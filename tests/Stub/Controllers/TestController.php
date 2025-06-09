@@ -16,4 +16,9 @@ class TestController implements ObserverInterface
     {
         Rudra::config()->set(["subscriber" => "after"]);
     }
+
+    public function subscriberObject($argument = null)
+    {
+        Rudra::config()->set(["subscriberObject" => "subscriberObject"]);
+    }
 }
