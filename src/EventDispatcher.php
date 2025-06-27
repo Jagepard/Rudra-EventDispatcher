@@ -17,6 +17,14 @@ class EventDispatcher implements EventDispatcherInterface
     protected array $observers = [];
 
     /**
+     * Adds an event listener for the specified event.
+     * The listener can be either a Closure or an array containing a class/object and a method name.
+     * If additional arguments are provided, they are stored along with the listener.
+     * -------------------------
+     * Добавляет обработчик событий для указанного события.
+     * Обработчик может быть либо замыканием (Closure), либо массивом, содержащим класс/объект и имя метода.
+     * Если предоставлены дополнительные аргументы, они сохраняются вместе с обработчиком.
+     * 
      * @param  string $event
      * @param  array  $listener
      * @param  ...$arguments
@@ -42,6 +50,16 @@ class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
+     * Dispatches an event by invoking its associated listener.
+     * If the listener is a Closure, it is returned directly.
+     * If the listener is an object or class with a method, the method is invoked with optional arguments.
+     * If the event does not exist or the listener is invalid, a LogicException is thrown.
+     * -------------------------
+     * Вызывает событие, выполняя связанный с ним обработчик.
+     * Если обработчик является замыканием (Closure), оно возвращается напрямую.
+     * Если обработчик — это объект или класс с методом, метод вызывается с необязательными аргументами.
+     * Если событие не существует или обработчик недействителен, выбрасывается исключение LogicException.
+     * 
      * @param  string $event
      * @param  ...$arguments
      * @return void
@@ -80,7 +98,15 @@ class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
-     * @param  string         $event
+     * Attaches an observer to a specific event.
+     * The observer must be an array containing a class/object and a method name.
+     * If additional arguments are provided, they are stored along with the observer.
+     * -------------------------
+     * Присоединяет наблюдателя к указанному событию.
+     * Наблюдатель должен быть массивом, содержащим класс/объект и имя метода.
+     * Если предоставлены дополнительные аргументы, они сохраняются вместе с наблюдателем.
+     * 
+     * @param  string $event
      * @param  array $subscriber
      * @param  ...$arguments
      * @return void
@@ -104,6 +130,14 @@ class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
+     * Detaches an observer from a specific event.
+     * The observer can be identified by its class name or object instance.
+     * If the observer exists for the specified event, it is removed from the observers list.
+     * -------------------------
+     * Отсоединяет наблюдателя от указанного события.
+     * Наблюдатель может быть идентифицирован по имени класса или экземпляру объекта.
+     * Если наблюдатель существует для указанного события, он удаляется из списка наблюдателей.
+     * 
      * @param  string $event
      * @param  string $subscriber
      * @return void
@@ -120,7 +154,13 @@ class EventDispatcher implements EventDispatcherInterface
     }
 
     /**
-     * Notifies observers of an event
+     * Notifies all observers of a specific event by invoking their associated methods.
+     * If the event does not exist or the observer is invalid, a LogicException is thrown.
+     * Observers can be objects or classes with methods, and optional arguments can be passed to them.
+     * -------------------------
+     * Уведомляет всех наблюдателей указанного события, вызывая связанные с ними методы.
+     * Если событие не существует или наблюдатель недействителен, выбрасывается исключение LogicException.
+     * Наблюдатели могут быть объектами или классами с методами, и им могут быть переданы необязательные аргументы.
      * 
      * @param  string $event
      * @param  ...$arguments

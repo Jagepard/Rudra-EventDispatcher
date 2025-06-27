@@ -11,29 +11,39 @@
 ```composer require rudra/event-dispatcher```
 #### Использование / Usage
 ```php
-use Rudra\Container;
-use Rudra\EventDispatcher;
-use Rudra\Interfaces\ContainerInterface;
+use Rudra\EventDispatcher\EventDispatcherFacade as Dispatcher;
 ```
+##### Add listeners / Добавление слушателей
 ```php
-$rudra = Container::app();
+Dispatcher::addListener('app.listener', [AppListener::class, 'onEvent']);
+Dispatcher::addListener('app.closure', function () {
+    Rudra::config()->set(["closure" => "closure"]);
+});
+Dispatcher::addListener('before', [new TestController(), 'before']);
 ```
-##### Вызов из контейнера / use container
+##### Dispatches an event / Вызывает событие
 ```php
-$services = [
-    'contracts' => [
-        ContainerInterface::class => $rudra,
-    ],
-    
-    'services' => [
-        // Another services
-        
-        'event.dispatcher' => ['Rudra\EventDispatcher'],
-        
-        // Another services
-    ]
-];
+Dispatcher::dispatch('app.listener', 123);
+Dispatcher::dispatch('app.closure');
+Dispatcher::dispatch('before');
 ```
+##### Attach observer / Прикрепить наблюдателя
 ```php
-$rudra->setServices($services); 
+Dispatcher::attachObserver("before", [TestController::class, "before"]);
+Dispatcher::attachObserver("closure", ['closure', function () {
+    Rudra::config()->set(['closure' => "closure"]);
+}]);
+######
+$test = new TestController();
+Dispatcher::attachObserver("subscriberObject", [$test, "subscriberObject"], 123);
+```
+##### Detach observer / Отсоединить наблюдателя
+```php
+Dispatcher::detachObserver("before", TestController::class);
+```
+##### Notify the observers / Оповестить наблюдателей
+```php
+Dispatcher::notify("before");
+Dispatcher::notify("closure");
+Dispatcher::notify("subscriberObject");
 ```
