@@ -13,5 +13,4 @@ namespace Rudra\EventDispatcher;
 
 interface ObserverInterface
 {
-
 }
