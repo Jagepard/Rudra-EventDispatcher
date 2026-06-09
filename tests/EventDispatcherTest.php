@@ -8,24 +8,21 @@
  * @author  Korotkov Danila (Jagepard) <jagepard@yandex.ru>
  * @license https://mozilla.org/MPL/2.0/  MPL-2.0
  * 
- * phpunit src/tests/ContainerTest --coverage-html src/tests/coverage-html
+ * phpunit src/tests/EventDispatcherTest --coverage-html src/tests/coverage-html
  */
 
 namespace Rudra\EventDispatcher\Tests;
 
-use Rudra\EventDispatcher\{
-    EventDispatcher,
-    EventDispatcherFacade,
-    EventDispatcherInterface,
-    Tests\Stub\Events\AppEvents,
-    Tests\Stub\Listeners\AppListener
-};
 use Rudra\Container\Facades\Rudra;
 use Rudra\Exceptions\LogicException;
-use PHPUnit\Framework\TestCase as PHPUnit_Framework_TestCase;
+use Rudra\EventDispatcher\EventDispatcher;
+use Rudra\EventDispatcher\EventDispatcherFacade;
+use Rudra\EventDispatcher\EventDispatcherInterface;
+use Rudra\EventDispatcher\Tests\Stub\Events\AppEvents;
+use Rudra\EventDispatcher\Tests\Stub\Listeners\AppListener;
 use Rudra\EventDispatcher\Tests\Stub\Controllers\TestController;
 
-class EventDispatcherTest extends PHPUnit_Framework_TestCase
+class EventDispatcherTest extends \PHPUnit\Framework\TestCase
 {
     protected AppListener $listener;
 

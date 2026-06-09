@@ -13,7 +13,7 @@
 ```php
 use Rudra\EventDispatcher\EventDispatcherFacade as Dispatcher;
 ```
-##### Add listeners / Добавление слушателей
+##### Add a listener / Добавление слушателя
 ```php
 Dispatcher::addListener('app.listener', [AppListener::class, 'onEvent']);
 Dispatcher::addListener('app.closure', function () {
@@ -21,31 +21,40 @@ Dispatcher::addListener('app.closure', function () {
 });
 Dispatcher::addListener('before', [new TestController(), 'before']);
 ```
-##### Dispatches an event / Вызывает событие
+##### Dispatch an event / Вызов события
 ```php
 Dispatcher::dispatch('app.listener', 123);
-Dispatcher::dispatch('app.closure');
+
+// For Closure listeners, dispatch returns the Closure itself
+$closure = Dispatcher::dispatch('app.closure');
+$closure();
+
 Dispatcher::dispatch('before');
 ```
-##### Attach observer / Прикрепить наблюдателя
+##### Attach an observer / Прикрепление наблюдателя
 ```php
 Dispatcher::attachObserver("before", [TestController::class, "before"]);
 Dispatcher::attachObserver("closure", ['closure', function () {
     Rudra::config()->set(['closure' => "closure"]);
 }]);
-######
+
 $test = new TestController();
 Dispatcher::attachObserver("subscriberObject", [$test, "subscriberObject"], 123);
 ```
-##### Detach observer / Отсоединить наблюдателя
+##### Detach an observer / Отсоединение наблюдателя
 ```php
 Dispatcher::detachObserver("before", TestController::class);
 ```
-##### Notify the observers / Оповестить наблюдателей
+##### Notify the observers / Оповещение наблюдателей
 ```php
 Dispatcher::notify("before");
 Dispatcher::notify("closure");
 Dispatcher::notify("subscriberObject");
+```
+##### Get all listeners / observers / Получение списка слушателей и наблюдателей
+```php
+Dispatcher::getListeners();
+Dispatcher::getObservers();
 ```
 ## License
 
