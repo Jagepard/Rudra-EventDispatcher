@@ -5,15 +5,13 @@
 -----
 
 # Rudra-EventDispatcher | [API](https://github.com/Jagepard/Rudra-EventDispatcher/blob/master/docs.md "Documentation API")
-Диспетчер событий
-
-#### Установка / Install
+#### Install
 ```composer require rudra/event-dispatcher```
-#### Использование / Usage
+#### Usage
 ```php
 use Rudra\EventDispatcher\EventDispatcherFacade as Dispatcher;
 ```
-##### Add a listener / Добавление слушателя
+##### Add a listener
 ```php
 Dispatcher::addListener('app.listener', [AppListener::class, 'onEvent']);
 Dispatcher::addListener('app.closure', function () {
@@ -21,7 +19,7 @@ Dispatcher::addListener('app.closure', function () {
 });
 Dispatcher::addListener('before', [new TestController(), 'before']);
 ```
-##### Dispatch an event / Вызов события
+##### Dispatch an event
 ```php
 Dispatcher::dispatch('app.listener', 123);
 
@@ -31,7 +29,7 @@ $closure();
 
 Dispatcher::dispatch('before');
 ```
-##### Attach an observer / Прикрепление наблюдателя
+##### Attach an observer
 ```php
 Dispatcher::attachObserver("before", [TestController::class, "before"]);
 Dispatcher::attachObserver("closure", ['closure', function () {
@@ -41,17 +39,17 @@ Dispatcher::attachObserver("closure", ['closure', function () {
 $test = new TestController();
 Dispatcher::attachObserver("subscriberObject", [$test, "subscriberObject"], 123);
 ```
-##### Detach an observer / Отсоединение наблюдателя
+##### Detach an observer
 ```php
 Dispatcher::detachObserver("before", TestController::class);
 ```
-##### Notify the observers / Оповещение наблюдателей
+##### Notify the observers
 ```php
 Dispatcher::notify("before");
 Dispatcher::notify("closure");
 Dispatcher::notify("subscriberObject");
 ```
-##### Get all listeners / observers / Получение списка слушателей и наблюдателей
+##### Get all listeners / observers
 ```php
 Dispatcher::getListeners();
 Dispatcher::getObservers();
@@ -67,13 +65,3 @@ This project is licensed under the **Mozilla Public License 2.0 (MPL-2.0)** — 
 
 📄 Full license text: [LICENSE](./LICENSE)  
 🌐 Official MPL-2.0 page: https://mozilla.org/MPL/2.0/
-
---------------------------
-Проект распространяется под лицензией **Mozilla Public License 2.0 (MPL-2.0)**. Это означает:
- - Вы можете свободно использовать, изменять и распространять код.
- - При изменении файлов, содержащих исходный код из этого репозитория, вы обязаны оставить их открытыми под той же лицензией.
- - Вы **обязаны сохранять уведомления об авторстве** и ссылку на оригинал.
- - Вы можете встраивать код в проприетарные проекты, если исходные файлы остаются под MPL.
-
-📄  Полный текст лицензии (на английском): [LICENSE](./LICENSE)  
-🌐 Официальная страница: https://mozilla.org/MPL/2.0/
