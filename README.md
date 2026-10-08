@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/Jagepard/Rudra-EventDispatcher/badge.svg?branch=master)](https://coveralls.io/github/Jagepard/Rudra-EventDispatcher?branch=master)
 -----
 
-# Rudra-EventDispatcher | [API](https://github.com/Jagepard/Rudra-EventDispatcher/blob/master/docs.md "Documentation API")
+# Rudra-EventDispatcher | [API](https://github.com/Jagepard/Rudra-EventDispatcher/blob/master/docs.md 'Documentation API')
 #### Install
 ```composer require rudra/event-dispatcher```
 #### Usage
@@ -15,7 +15,7 @@ use Rudra\EventDispatcher\EventDispatcherFacade as Dispatcher;
 ```php
 Dispatcher::addListener('app.listener', [AppListener::class, 'onEvent']);
 Dispatcher::addListener('app.closure', function () {
-    Rudra::config()->set(["closure" => "closure"]);
+    Rudra::config()->set(['closure' => 'closure']);
 });
 Dispatcher::addListener('before', [new TestController(), 'before']);
 ```
@@ -31,23 +31,23 @@ Dispatcher::dispatch('before');
 ```
 ##### Attach an observer
 ```php
-Dispatcher::attachObserver("before", [TestController::class, "before"]);
-Dispatcher::attachObserver("closure", ['closure', function () {
-    Rudra::config()->set(['closure' => "closure"]);
+Dispatcher::attachObserver('before', [TestController::class, 'before']);
+Dispatcher::attachObserver('closure', ['closure', function () {
+    Rudra::config()->set(['closure' => 'closure']);
 }]);
 
 $test = new TestController();
-Dispatcher::attachObserver("subscriberObject", [$test, "subscriberObject"], 123);
+Dispatcher::attachObserver('subscriberObject', [$test, 'subscriberObject'], 123);
 ```
 ##### Detach an observer
 ```php
-Dispatcher::detachObserver("before", TestController::class);
+Dispatcher::detachObserver('before', TestController::class);
 ```
 ##### Notify the observers
 ```php
-Dispatcher::notify("before");
-Dispatcher::notify("closure");
-Dispatcher::notify("subscriberObject");
+Dispatcher::notify('before');
+Dispatcher::notify('closure');
+Dispatcher::notify('subscriberObject');
 ```
 ##### Get all listeners / observers
 ```php

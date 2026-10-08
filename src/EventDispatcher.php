@@ -32,14 +32,14 @@ class EventDispatcher implements EventDispatcherInterface
         }
 
         if (count($listener) !== 2) {
-            throw new LogicException("Listener must be a Closure or an array with two elements.");
+            throw new LogicException('Listener must be a Closure or an array with two elements.');
         }
 
-        $this->listeners[$event]["listener"] = $listener[0];
-        $this->listeners[$event]["method"]   = $listener[1];
+        $this->listeners[$event]['listener'] = $listener[0];
+        $this->listeners[$event]['method']   = $listener[1];
 
         if ($arguments) {
-            $this->listeners[$event]["arguments"] = $arguments;
+            $this->listeners[$event]['arguments'] = $arguments;
         }
     }
 
@@ -55,25 +55,25 @@ class EventDispatcher implements EventDispatcherInterface
     public function dispatch(string $event, ...$arguments): mixed
     {
         if (!isset($this->listeners[$event])) { 
-            throw new LogicException("Event '$event' does not exist.");
+            throw new LogicException("Event '$event' does not exist.");///
         }
 
         if ($this->listeners[$event] instanceof \Closure) {
             return $this->listeners[$event];
         }
 
-        $listener = $this->listeners[$event]["listener"];
+        $listener = $this->listeners[$event]['listener'];
         $listener = is_object($listener)
             ? $listener
-            : (class_exists($listener) ? new $listener() : throw new LogicException("Subscriber class '$listener' does not exist."));
-        $method   = $this->listeners[$event]["method"];
+            : (class_exists($listener) ? new $listener() : throw new LogicException("Subscriber class '$listener' does not exist."));///
+        $method   = $this->listeners[$event]['method'];
 
         if ($arguments) { 
-            $this->listeners[$event]["arguments"] = $arguments;
+            $this->listeners[$event]['arguments'] = $arguments;
         }
 
-        return isset($this->listeners[$event]["arguments"])
-            ? $listener->$method(...$this->listeners[$event]["arguments"])
+        return isset($this->listeners[$event]['arguments'])
+            ? $listener->$method(...$this->listeners[$event]['arguments'])
             : $listener->$method();
     }
 
@@ -94,18 +94,18 @@ class EventDispatcher implements EventDispatcherInterface
     public function attachObserver(string $event, array $subscriber, ...$arguments): void
     {
         if (count($subscriber) !== 2) {
-            throw new LogicException("Subscriber must be an array with two elements.");
+            throw new LogicException('Subscriber must be an array with two elements.');
         }
 
         $subscriberName = is_object($subscriber[0])
             ? $subscriber[0]::class
             : $subscriber[0];
 
-        $this->observers[$event][$subscriberName]["class"]  = $subscriber[0];
-        $this->observers[$event][$subscriberName]["method"] = $subscriber[1];
+        $this->observers[$event][$subscriberName]['class']  = $subscriber[0];
+        $this->observers[$event][$subscriberName]['method'] = $subscriber[1];
 
         if ($arguments) {
-            $this->observers[$event][$subscriberName]["arguments"] = $arguments;
+            $this->observers[$event][$subscriberName]['arguments'] = $arguments;
         }
     }
 
@@ -137,13 +137,13 @@ class EventDispatcher implements EventDispatcherInterface
     public function notify(string $event, ...$arguments): void
     {
         if (!isset($this->observers[$event])) {
-            throw new LogicException("Event '$event' does not exist.");
+            throw new LogicException("Event '$event' does not exist.");///
         }
 
         foreach ($this->observers[$event] as $subscriber) {
             
-            $class  = $subscriber["class"];
-            $method = $subscriber["method"];
+            $class  = $subscriber['class'];
+            $method = $subscriber['method'];
             $args   = $subscriber['arguments'] ?? $arguments;
 
             if ($method instanceof \Closure) {
