@@ -18,11 +18,11 @@ class SomeEvent implements EventInterface
 {
     public function oneEvent()
     {
-        Rudra::config()->set(["one" => "one"]);
+        Rudra::config()->set(['one' => 'one']);
     }
 
     public function twoEvent()
     {
-        Rudra::config()->set(["two" => "two"]);
+        Rudra::config()->set(['two' => 'two']);
     }
 }

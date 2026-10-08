@@ -31,7 +31,7 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
         EventDispatcherFacade::addListener(AppEvents::APP_LISTENER, [AppListener::class, 'onEvent']);
         EventDispatcherFacade::addListener(AppEvents::APP_PARAMS, [AppListener::class, 'onParams'], 'data');
         EventDispatcherFacade::addListener(AppEvents::APP_CLOSURE, function () {
-            Rudra::config()->set(["closure" => "closure"]);
+            Rudra::config()->set(['closure' => 'closure']);
         });
         EventDispatcherFacade::addListener('before', [new TestController(), 'before']);
     }
@@ -62,30 +62,30 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
 
     public function testPublisher(): void
     {
-        EventDispatcherFacade::attachObserver("before", [TestController::class, "before"]);
-        EventDispatcherFacade::notify("before");
-        $this->assertEquals(Rudra::config()->get('subscriber'), "before");
-        EventDispatcherFacade::detachObserver("before", TestController::class);
+        EventDispatcherFacade::attachObserver('before', [TestController::class, 'before']);
+        EventDispatcherFacade::notify('before');
+        $this->assertEquals(Rudra::config()->get('subscriber'), 'before');
+        EventDispatcherFacade::detachObserver('before', TestController::class);
 
-        EventDispatcherFacade::attachObserver("after", [TestController::class, "after"]);
-        EventDispatcherFacade::notify("after");
-        $this->assertEquals(Rudra::config()->get('subscriber'), "after");
+        EventDispatcherFacade::attachObserver('after', [TestController::class, 'after']);
+        EventDispatcherFacade::notify('after');
+        $this->assertEquals(Rudra::config()->get('subscriber'), 'after');
 
-        EventDispatcherFacade::attachObserver("closure", ['closure', function () {
-            Rudra::config()->set(['closure' => "closure"]);
+        EventDispatcherFacade::attachObserver('closure', ['closure', function () {
+            Rudra::config()->set(['closure' => 'closure']);
         }]);
-        EventDispatcherFacade::notify("closure");
-        $this->assertEquals(Rudra::config()->get('closure'), "closure");
+        EventDispatcherFacade::notify('closure');
+        $this->assertEquals(Rudra::config()->get('closure'), 'closure');
     }
 
     public function testPublisherObject(): void
     {
         $test = new TestController();
 
-        EventDispatcherFacade::attachObserver("subscriberObject", [$test, "subscriberObject"], 123);
-        EventDispatcherFacade::notify("subscriberObject");
-        $this->assertEquals(Rudra::config()->get('subscriberObject'), "subscriberObject");
-        EventDispatcherFacade::detachObserver("subscriberObject", $test);
+        EventDispatcherFacade::attachObserver('subscriberObject', [$test, 'subscriberObject'], 123);
+        EventDispatcherFacade::notify('subscriberObject');
+        $this->assertEquals(Rudra::config()->get('subscriberObject'), 'subscriberObject');
+        EventDispatcherFacade::detachObserver('subscriberObject', $test);
     }
 
     public function testGetListeners(): void
@@ -125,7 +125,7 @@ class EventDispatcherTest extends \PHPUnit\Framework\TestCase
     public function testNotifyWrongMethodSubscriberLogicException(): void  
     {
         $this->expectException(LogicException::class);
-        EventDispatcherFacade::attachObserver("wrongMethod", [TestController::class, "wrongMethod"]);
+        EventDispatcherFacade::attachObserver('wrongMethod', [TestController::class, 'wrongMethod']);
         EventDispatcherFacade::notify('wrongMethod');
     }
 }

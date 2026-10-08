@@ -17,7 +17,7 @@ class AppListener
 {
     public function onEvent($data)
     {
-        Rudra::config()->set(["listener" => $data]);
+        Rudra::config()->set(['listener' => $data]);
     }
 
     public function onParams($data)
